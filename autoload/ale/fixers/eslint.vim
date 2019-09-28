@@ -1,11 +1,22 @@
 " Author: w0rp <devw0rp@gmail.com>
 " Description: Fixing files with eslint.
 
+function! s:GetDir(buffer) abort
+    return expand('#' . string(a:buffer) . ':p:h')
+endfunction
+
 function! ale#fixers#eslint#Fix(buffer) abort
+    echomsg "fixing this crap"
+    let l:dir = s:GetDir(a:buffer)
     let l:executable = ale#handlers#eslint#GetExecutable(a:buffer)
-    let l:command = ale#node#Executable(a:buffer, l:executable)
+
+    let l:command = ale#path#CdString(l:dir)
+    \   . ale#node#Executable(a:buffer, l:executable)
     \   . ' --version'
 
+    echomsg "fixing this crap" . string(l:command)
+
+    " TODO: add ale#path#CdString(l:dir) to this command too.
     return ale#semver#RunWithVersionCheck(
     \   a:buffer,
     \   l:executable,
