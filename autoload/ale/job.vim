@@ -244,7 +244,6 @@ function! ale#job#Start(command, options) abort
         \   'in_mode': l:job_info.mode,
         \   'out_mode': l:job_info.mode,
         \   'err_mode': l:job_info.mode,
-        \   'cwd': l:job_info.cwd,
         \}
 
         if has_key(a:options, 'cwd')
