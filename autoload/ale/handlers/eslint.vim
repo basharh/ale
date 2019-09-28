@@ -9,6 +9,11 @@ call ale#Set('javascript_eslint_use_global', get(g:, 'ale_use_global_executables
 call ale#Set('javascript_eslint_suppress_eslintignore', 0)
 call ale#Set('javascript_eslint_suppress_missing_config', 0)
 
+" TODO: change this to find nearest parent directory with node_modules?
+function! s:GetDir(buffer) abort
+    return expand('#' . string(a:buffer) . ':p:h')
+endfunction
+
 function! ale#handlers#eslint#FindConfig(buffer) abort
     for l:path in ale#path#Upwards(expand('#' . a:buffer . ':p:h'))
         for l:basename in [
@@ -38,11 +43,13 @@ function! ale#handlers#eslint#GetExecutable(buffer) abort
 endfunction
 
 function! ale#handlers#eslint#GetCommand(buffer) abort
+    let l:dir = s:GetDir(a:buffer)
     let l:executable = ale#handlers#eslint#GetExecutable(a:buffer)
 
     let l:options = ale#Var(a:buffer, 'javascript_eslint_options')
 
-    return ale#node#Executable(a:buffer, l:executable)
+    return ale#path#CdString(l:dir)
+    \   . ale#node#Executable(a:buffer, l:executable)
     \   . (!empty(l:options) ? ' ' . l:options : '')
     \   . ' -f json --stdin --stdin-filename %s'
 endfunction
