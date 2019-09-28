@@ -281,6 +281,7 @@ function! ale#command#Run(buffer, command, Callback, ...) abort
     \       }
     \   )},
     \   'mode': 'nl',
+    \   'cwd': expand('#' . string(a:buffer) . ':p:h'),
     \}
 
     if l:output_stream is# 'stdout'

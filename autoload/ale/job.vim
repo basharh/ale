@@ -219,6 +219,10 @@ function! ale#job#Start(command, options) abort
     let l:job_options = {}
 
     if has('nvim')
+        if has_key(a:options, 'cwd')
+            let l:job_options.cwd = a:options.cwd
+        endif
+
         if has_key(a:options, 'out_cb')
             let l:job_options.on_stdout = function('s:NeoVimCallback')
             let l:job_info.out_cb_line = ''
@@ -240,7 +244,12 @@ function! ale#job#Start(command, options) abort
         \   'in_mode': l:job_info.mode,
         \   'out_mode': l:job_info.mode,
         \   'err_mode': l:job_info.mode,
+        \   'cwd': l:job_info.cwd,
         \}
+
+        if has_key(a:options, 'cwd')
+            let l:job_options.cwd = a:options.cwd
+        endif
 
         if has_key(a:options, 'out_cb')
             let l:job_options.out_cb = function('s:VimOutputCallback')
