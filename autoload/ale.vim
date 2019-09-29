@@ -111,6 +111,12 @@ function! s:Lint(buffer, should_lint_file, timer_id) abort
         return
     endif
 
+    " lint_file is set if `has_key(g:ale_buffer_info, a:buffer)` or
+    " (should_lint_file is set the buffer is backed by a file)
+
+    " is `lint_file` related to linting the file backing the buffer vs linting
+    " the buffer itself.
+
     " Clear lint_file linters, or only run them if the file exists.
     let l:lint_file = empty(l:linters)
     \   || (a:should_lint_file && filereadable(expand('#' . a:buffer . ':p')))
@@ -141,6 +147,7 @@ function! ale#Queue(delay, ...) abort
     " Default linting_flag to ''
     let l:should_lint_file = get(a:000, 0) is# 'lint_file'
 
+    " stop the old timer
     if s:lint_timer != -1
         call timer_stop(s:lint_timer)
         let s:lint_timer = -1
